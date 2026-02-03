@@ -56,7 +56,7 @@ class TestSplitNodesDelimiter(unittest.TestCase):
         new_nodes = split_nodes_delimiter([node], "`", TextType.CODE)
         new_nodes2 = split_nodes_delimiter(new_nodes, "**", TextType.BOLD)
         self.assertEqual(new_nodes2[1].text_type == TextType.BOLD, True)
-        self.assertEqual(new_nodes2[2].text_type == TextType.CODE, True)
+        self.assertEqual(new_nodes2[3].text_type == TextType.CODE, True)
 
     def test_split_nodes_images(self):
         node = TextNode(
