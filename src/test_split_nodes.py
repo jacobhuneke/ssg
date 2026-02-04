@@ -173,8 +173,41 @@ class TestSplitNodesDelimiter(unittest.TestCase):
         TextType.TEXT,
         )
         new_nodes = split_nodes_link([node])
+        self.assertEqual(len(new_nodes), 5)
         
+    def test_text_to_textnodes(self):
+        text = "This is **text** with an _italic_ word and a `code block` and an ![obi wan image](https://i.imgur.com/fJRm4Vk.jpeg) and a [link](https://boot.dev)"
+        new_nodes = text_to_textnodes(text)
+        self.assertListEqual(new_nodes,
+                                [
+                                TextNode("This is ", TextType.TEXT, None), 
+                                TextNode("text", TextType.BOLD, None), 
+                                TextNode(" with an ", TextType.TEXT, None), 
+                                TextNode("italic", TextType.ITALIC, None),
+                                TextNode(" word and a ", TextType.TEXT, None), 
+                                TextNode("code block", TextType.CODE, None),
+                                TextNode(" and an ", TextType.TEXT, None),
+                                TextNode("obi wan image", TextType.IMAGE, "https://i.imgur.com/fJRm4Vk.jpeg"),
+                                TextNode(" and a ", TextType.TEXT, None),
+                                TextNode("link", TextType.LINK, "https://boot.dev")],
+    
+                             )
+        
+    def test_text_to_nodes_ooorder(self):
+        text = "**something bold**_something Italic_  `some code`"
+        new_nodes = text_to_textnodes(text)
+        self.assertEqual(len(new_nodes), 4)
+
+    def test_text_to_nodes2(self):
+        text = "this will be out of order **a bog bolded message**, some r a ndom balogna **more bold****more bold**"
+        new_nodes = text_to_textnodes(text)
+        num_bold = 0
+        for node in new_nodes:
+            if node.text_type == TextType.BOLD:
+                num_bold += 1
+        self.assertEqual(3, num_bold)
 
 
+        
 if __name__ == "__main__":
     unittest.main()

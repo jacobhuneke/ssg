@@ -1,6 +1,6 @@
 import unittest
 
-from extract import *
+from split_nodes import *
 
 class TestHTMLNode(unittest.TestCase):
     def test_extract_markdown_images(self):

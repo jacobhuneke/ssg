@@ -1,5 +1,5 @@
 from textnode import *
-from extract import *
+import re
 
 def split_nodes_delimiter(old_nodes, delimiter, text_type):
     if old_nodes is None:
@@ -15,14 +15,14 @@ def split_nodes_delimiter(old_nodes, delimiter, text_type):
             continue
             
         spl = node.text.split(delimiter)
-        #[this is text with a , code block, word]
-        #len = 
+
         if len(spl) % 2 == 0:
             raise Exception("invalid markdown syntax")
     
         i = 0
         for s in spl:
             if s == "":
+                i += 1
                 continue
             if i % 2 == 0:
                 new_nodes.append(TextNode(s, TextType.TEXT))
@@ -31,6 +31,14 @@ def split_nodes_delimiter(old_nodes, delimiter, text_type):
             i += 1
 
     return new_nodes
+
+def extract_markdown_images(text):
+    return re.findall(r"\!\[(.*?)\]\((.*?)\)", text)
+
+
+def extract_markdown_link(text):
+    return re.findall(r"(?<!\!)\[(.*?)\]\((.*?)\)", text)
+
 
 
 def split_nodes_image(old_nodes):
@@ -87,4 +95,13 @@ def split_nodes_link(old_nodes):
             str = spl[1]
         if str != "":
             new_nodes.append(TextNode(spl[1], TextType.TEXT))
+    return new_nodes
+
+def text_to_textnodes(text):
+    new_nodes = []
+    new_nodes = split_nodes_delimiter([TextNode(text, TextType.TEXT)], "**", TextType.BOLD)
+    new_nodes = split_nodes_delimiter(new_nodes, "_", TextType.ITALIC)
+    new_nodes = split_nodes_delimiter(new_nodes, "`", TextType.CODE)
+    new_nodes = split_nodes_image(new_nodes)
+    new_nodes = split_nodes_link(new_nodes)
     return new_nodes
