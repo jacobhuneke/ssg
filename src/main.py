@@ -1,6 +1,7 @@
 from text_node_to_html_node import *
 import os
 import shutil
+import sys
 
 
 def copy_source_to_dest(source, destination):
@@ -46,7 +47,7 @@ def copy_source_to_dest(source, destination):
     except Exception as e:
         return f"Error: {e}"
     
-def generate_page(from_path, template_path, dest_path):
+def generate_page(from_path, template_path, dest_path, basepath):
     print(f"Generating page from {from_path} to {dest_path} using {template_path}")
     try:
         with open(from_path) as f:
@@ -60,15 +61,17 @@ def generate_page(from_path, template_path, dest_path):
 
         with_title = temp_path_contents.replace("{{ Title }}", title)
         with_contents = with_title.replace("{{ Content }}", html)
+        with_basepath = with_contents.replace('href="/', f'href="{basepath}')
+        with_src = with_basepath.replace('src="/', f'src="{basepath}')
         
         temp_file = open(dest_path, "w")
-        temp_file.write(with_contents)
+        temp_file.write(with_src)
         temp_file.close()
         
     except Exception as e:
         return f"Error: {e}"
 
-def generate_pages_recursively(dir_path_content, template_path, dest_dir_path):
+def generate_pages_recursively(dir_path_content, template_path, dest_dir_path, basepath):
     try:
         path = os.path.abspath(dir_path_content)
         target_dir_src = os.path.normpath(os.path.join(path, "."))
@@ -78,21 +81,27 @@ def generate_pages_recursively(dir_path_content, template_path, dest_dir_path):
             if os.path.isdir(content_path):
                 new_dir_path = os.path.join(dest_dir_path, content)
                 os.mkdir(new_dir_path)
-                generate_pages_recursively(content_path, template_path, new_dir_path)
+                generate_pages_recursively(content_path, template_path, new_dir_path, basepath)
             elif os.path.isfile(content_path):
                 root_path = os.path.splitext(content)
                 str = root_path[0]
                 str += ".html"
                 new_dir_path = os.path.join(dest_dir_path, str)
-                generate_page(content_path, template_path, new_dir_path)
+                generate_page(content_path, template_path, new_dir_path, basepath)
 
     except Exception as e:
         return f"Error: {e}"
     
-    
+
 def main():
-    copy_source_to_dest("static", "public")
-    generate_pages_recursively("content", "template.html", "public")
+
+    if len(sys.argv) > 1:
+        basepath = sys.argv[1]
+    else:
+        basepath = "/"
+
+    copy_source_to_dest("static", "docs")
+    generate_pages_recursively("content", "template.html", "docs", basepath)
 
 
 main()
