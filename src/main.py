@@ -61,9 +61,9 @@ def generate_page(from_path, template_path, dest_path, basepath):
 
         with_title = temp_path_contents.replace("{{ Title }}", title)
         with_contents = with_title.replace("{{ Content }}", html)
-        with_basepath = with_contents.replace('href="/', f'href="{basepath}')
-        with_src = with_basepath.replace('src="/', f'src="{basepath}')
-        
+        with_basepath = with_contents.replace('href="/ssg/', f'href="' + basepath)
+        with_src = with_basepath.replace('src="/ssg/', f'src="' + basepath)
+
         temp_file = open(dest_path, "w")
         temp_file.write(with_src)
         temp_file.close()
@@ -100,8 +100,8 @@ def main():
     else:
         basepath = "/"
 
-    copy_source_to_dest("static", "docs")
-    generate_pages_recursively("content", "template.html", "docs", basepath)
+    copy_source_to_dest("./static", "./docs")
+    generate_pages_recursively("./content", "./template.html", "./docs", basepath)
 
 
 main()
