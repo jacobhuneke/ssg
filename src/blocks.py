@@ -1,5 +1,7 @@
 from enum import Enum
 
+
+#types a block can be, default is paragraph
 class BlockType(Enum):
     PARAGRAPH = "paragraph"
     HEADING = "heading"
@@ -7,6 +9,15 @@ class BlockType(Enum):
     QUOTE = "quote"
     UNORDERED_LIST = "unordered_list"
     ORDERED_LIST = "ordered_list"
+
+#returns the number of # at beginning of a header block
+def get_header_count(block):
+    spl = block.split("#")
+    count = 0
+    for s in spl:
+        if s == "":
+            count += 1
+    return count
 
 def block_to_block_type(block):
     if block.startswith("#") == True and block.startswith("#######") == False:

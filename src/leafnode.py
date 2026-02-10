@@ -12,8 +12,10 @@ class LeafNode(HTMLNode):
 
         if self.tag != None and self.props == None:
             return f"<{self.tag}>{self.value}</{self.tag}>"
-        elif self.tag != None and self.props != None:
+        elif self.tag != None and self.props != None and self.tag != "img":
             return f"<{self.tag}{self.props_to_html()}>{self.value}</{self.tag}>"
+        elif self.tag != None and self.props != None and self.tag == "img":
+            return f"<{self.tag}{self.props_to_html()}>{self.value}"
         else:
             return self.value
         

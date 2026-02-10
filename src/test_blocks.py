@@ -115,3 +115,8 @@ This is the same paragraph on a new line
     def test_ordered4(self):
         block = "1. some ordered message\n2.another ordered line"
         self.assertEqual(block_to_block_type(block), BlockType.PARAGRAPH)
+    
+    def test_get_head_count(self):
+        block = "###### some words in the block"
+        count = get_header_count(block)
+        self.assertEqual(count, 6)
