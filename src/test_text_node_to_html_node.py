@@ -48,3 +48,20 @@ class TestParentNode(unittest.TestCase):
         with self.assertRaises(ValueError):
             text_node_to_html_node(node)
                 
+    def test_title_h1(self):
+        md = """
+## a first title
+
+The Title
+"""
+        with self.assertRaises(Exception):
+            extract_title(md)
+
+    def test_valid_h1(self):
+        md = """
+## a first title
+
+# The Title
+"""
+        title = extract_title(md)
+        self.assertEqual(title, "The Title")

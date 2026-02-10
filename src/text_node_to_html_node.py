@@ -46,7 +46,7 @@ def remove_greater_than(block):
     for spl in spl_new_line:
         s = spl.removeprefix(">")
         s = s.lstrip(" ") 
-        new_lines += " " + s
+        new_lines += " " + s 
     no_leading_space = new_lines.lstrip(" ")
     return no_leading_space
 
@@ -109,3 +109,11 @@ def markdown_to_html_node(markdown):
             children.append(create_block_html(block, block_type))
     parent.children = children
     return parent
+
+def extract_title(markdown):
+    blocks = markdown_to_blocks(markdown)
+    for block in blocks:
+        block_type = block_to_block_type(block)
+        if block_type == BlockType.HEADING and get_header_count(block) == 1:
+            return block.lstrip("# ")
+    raise Exception("Error: no h1 headers")
